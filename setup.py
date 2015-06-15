@@ -28,6 +28,6 @@ setup(
         "Programming Language :: Python",
         "Programming Language :: Python :: 2",
     ],
-
+    data_files=[('.', 'prepare_tests.py')],
     scripts=['salinity']
 )
