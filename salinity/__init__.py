@@ -26,7 +26,7 @@ def publickey():
 @click.option('--formula_dir',
               type=click.Path(exists=True, file_okay=False, dir_okay=True, writable=False, readable=True, resolve_path=True),
               help='Path to the directory containing your salt formulas',
-              prompt='Path to the directory containing your salt formula')
+              default='.')
 @click.option('--pillar_file',
               type=click.Path(exists=True, file_okay=True, dir_okay=False, writable=False, readable=True, resolve_path=True),
               help='Path to a pillar sls file')
