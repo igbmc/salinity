@@ -84,5 +84,6 @@ def test(formula_dir, pillar_file, gitfs_formula, boot2docker, states):
     shutil.rmtree(temp_dir_path)
     print(colored('Salinity temp dir deleted successfully', 'green'))
 
-if __name__ == '__main__':
+
+def main():
     cli()

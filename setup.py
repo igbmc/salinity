@@ -28,6 +28,11 @@ setup(
         "Programming Language :: Python",
         "Programming Language :: Python :: 2",
     ],
-    data_files=[('.', 'prepare_tests.py')],
-    scripts=['salinity']
+    packages=['salinity'],
+    include_package_data=True,
+    entry_points={
+        'console_scripts': [
+            'salinity = salinity:main'
+        ]
+    }
 )
