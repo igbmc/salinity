@@ -11,7 +11,7 @@ with open(os.path.join(os.path.dirname(__file__), "requirements.txt")) as f:
 
 setup(
     name="salinity",
-    version="0.1",
+    version="0.2",
     description="Test salt states on a local docker environment",
     long_description=LONG_DESC,
     author="Julien Seiler",

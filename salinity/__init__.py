@@ -2,11 +2,12 @@
 # coding=utf-8
 
 import click
-import tempfile
+import json
 import os
 import os.path
 import shutil
 import subprocess
+import tempfile
 
 from termcolor import colored
 
@@ -36,13 +37,24 @@ def publickey():
 @click.option('--boot2docker', is_flag=True, help='Docker is running with boot2docker')
 @click.argument('states', nargs=-1)
 def test(formula_dir, pillar_file, gitfs_formula, boot2docker, states):
+
+    config = {}
+    if os.path.exists("salinity.json"):
+        print "Found local config for salinity (salinity.json)"
+        try:
+            config = json.loads(open("salinity.json").read())
+        except:
+            print "salinity failed loading local config"
+            # malformed config file
+            config = {}
+
     salinity_path = os.path.dirname(os.path.abspath(__file__))
 
     # create temp dir
     # if using boot2docker only path located inside the user homedir can be mounted in a container
     # we also need to make sure to create the salinity temp_dir inside the user homedir
     # we need to check that the formulas_dir is also located inside the user homedir
-    if boot2docker:
+    if boot2docker or config.get('boot2docker', False):
         user_home_dir = os.path.expanduser('~')
 
         if not formula_dir.startswith(user_home_dir):
@@ -57,15 +69,25 @@ def test(formula_dir, pillar_file, gitfs_formula, boot2docker, states):
         temp_dir_path = tempfile.mkdtemp(prefix='salinity')
     print(colored('Created temp dir for salinity data at %s' % temp_dir_path, 'green'))
 
-    if pillar_file:
-        shutil.copyfile(pillar_file, os.path.join(temp_dir_path, u'salinity.sls'))
+    if pillar_file or 'pillar_file' in config:
+        if pillar_file:
+            pillar_file_path = pillar_file
+        else:
+            pillar_file_path = config['pillar_file']
+        shutil.copyfile(pillar_file_path, os.path.join(temp_dir_path, u'salinity.sls'))
 
-    if gitfs_formula:
+    if gitfs_formula or 'gitfs_formula' in config:
+
+        param_formulas = list(gitfs_formula) if gitfs_formula is not () else []
+        print "Param formulas : %s" % param_formulas
+        print "Config formulas : %s" % config.get('gitfs_formula')
+        formulas = set(param_formulas + config.get('gitfs_formula', []))
+
         salt_extra_config = open(os.path.join(temp_dir_path, u'extra_config'), 'w')
         salt_extra_config.write("fileserver_backend:\n  - roots\n  - git\n")
         salt_extra_config.write("gitfs_provider: pygit2\n")
         salt_extra_config.write("gitfs_remotes:\n")
-        for formula in gitfs_formula:
+        for formula in formulas:
             salt_extra_config.write("  - %s\n" % formula)
         salt_extra_config.write("gitfs_pubkey: /etc/ssh/salt_rsa.pub\n")
         salt_extra_config.write("gitfs_privkey: /etc/ssh/salt_rsa\n")
