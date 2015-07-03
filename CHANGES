@@ -1,0 +1,13 @@
+salinity Changelog
+===============
+
+Here you can see the full list of changes between each salinity release.
+
+Version 0.3
+-----------
+
+- Added support for YAML configuration file
+- Added --pubkey and --privkey options to test command for access to formula secured git repositories
+- Added --use_default_keys options to test command for access to formula secured git repositories
+- Remove publickey command
+- Rewrite README
