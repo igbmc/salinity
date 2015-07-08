@@ -66,7 +66,7 @@ def test(formula_dir, pillar_file, gitfs_formula, pubkey, privkey, use_default_k
                 print(colored("salinity failed loading local config", "red"))
             config = {}
 
-    if os.path.exists("salinity.yaml"):
+    if os.path.exists("salinity.yml"):
         if be_verbose:
             print(colored("Found local config for salinity (salinity.yml)", "yellow"))
 
