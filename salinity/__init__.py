@@ -19,6 +19,7 @@ be_verbose = False
 @click.option('--verbose', is_flag=True, default=False, help='tell salinity to be more verbose')
 def cli(verbose):
     """ Test salt states on local docker environment """
+    global be_verbose
     be_verbose = verbose
 
 
@@ -48,7 +49,7 @@ def cli(verbose):
 @click.option('--boot2docker', is_flag=True, help='Docker is running with boot2docker')
 @click.argument('states', nargs=-1)
 def test(formula_dir, pillar_file, gitfs_formula, pubkey, privkey, use_default_keys, boot2docker, states):
-
+    global be_verbose
     config = {}
 
     # salinity.json support will be removed in salinity 0.4
