@@ -3,6 +3,11 @@ salinity Changelog
 
 Here you can see the full list of changes between each salinity release.
 
+Version 0.3.2
+-------------
+- Added --image option. Salinity now support testing on Debian 7 or Debian 8
+- Salinity now uses images hosted on Docker Hub under in the namespace `salinity`
+
 Version 0.3.1
 -------------
 - Fixed --verbose option

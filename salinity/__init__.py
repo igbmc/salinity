@@ -24,6 +24,8 @@ def cli(verbose):
 
 
 @cli.command(help="Test salt states on a local docker environment")  # NOQA
+@click.option('--image', default='debian:7',
+              help='Name of the docker image used to run salt. By default salinity will use a debian 7 image.')
 @click.option('--formula_dir',
               type=click.Path(exists=True, file_okay=False, dir_okay=True,
                               writable=False, readable=True, resolve_path=True),
@@ -48,7 +50,7 @@ def cli(verbose):
 @click.option('--use_default_keys', is_flag=True, help='Use your default key pairs when accessing gitfs formulas')
 @click.option('--boot2docker', is_flag=True, help='Docker is running with boot2docker')
 @click.argument('states', nargs=-1)
-def test(formula_dir, pillar_file, gitfs_formula, pubkey, privkey, use_default_keys, boot2docker, states):
+def test(image, formula_dir, pillar_file, gitfs_formula, pubkey, privkey, use_default_keys, boot2docker, states):
     global be_verbose
     config = {}
 
@@ -145,7 +147,7 @@ def test(formula_dir, pillar_file, gitfs_formula, pubkey, privkey, use_default_k
     if be_verbose:
         print(colored('Launching tests of %s on docker' % u','.join(states), 'green'))
 
-    command = "docker run -i -v %s:/salinity -v %s:/formula -t julozi/wheezy-salt-base sh -c 'python /salinity/prepare_tests.py %s && salt-call state.highstate && bash'" % (temp_dir_path, formula_dir, u' '.join(states))
+    command = "docker run -i -v %s:/salinity -v %s:/formula -t salinity/%s sh -c 'python /salinity/prepare_tests.py %s && salt-call state.highstate && bash'" % (temp_dir_path, formula_dir, image, u' '.join(states))
     # command = "docker run -i -v %s:/salinity -v %s:/formula -t julozi/wheezy-salt-base sh -c 'bash'" % (temp_dir_path, formula_dir)
     if be_verbose:
         print(colored('Command line : %s' % command, 'yellow'))

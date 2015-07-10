@@ -94,6 +94,14 @@ The `test` command let you test one or more states of your formula on a virtual 
 
     $ salinity test [ARGS] [STATES]
 
+**--image**
+
+Name of the docker image used to run salt.
+
+Available images are :
+* debian:7 (default)
+* debian:8
+
 **--formula_dir**
 
 Path to the directory containing your salt formula. If not specified, Salinity will use current directory.
