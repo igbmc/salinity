@@ -1,11 +1,11 @@
-FROM debian:8
+FROM debian:7
 
 RUN ln -s /etc/rc2.d /etc/rc.d
 RUN apt-get update && apt-get install -y wget
 
 WORKDIR /tmp
 RUN wget --no-check-certificate -O install_salt.sh https://bootstrap.saltstack.com
-RUN sh install_salt.sh -MX
+RUN sh install_salt.sh -MX git v2015.5.0
 
 RUN apt-get install -y pkg-config make cmake libssh2-1-dev libhttp-parser-dev libssl-dev libz-dev
 RUN wget https://github.com/libgit2/libgit2/archive/v0.22.0.tar.gz

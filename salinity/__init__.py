@@ -147,7 +147,7 @@ def test(image, formula_dir, pillar_file, gitfs_formula, pubkey, privkey, use_de
     if be_verbose:
         print(colored('Launching tests of %s on docker' % u','.join(states), 'green'))
 
-    command = "docker run -i -v %s:/salinity -v %s:/formula -t salinity/%s sh -c 'python /salinity/prepare_tests.py %s && salt-call state.highstate && bash'" % (temp_dir_path, formula_dir, image, u' '.join(states))
+    command = "docker run -P -i -v %s:/salinity -v %s:/formula -t salinity/%s sh -c 'python /salinity/prepare_tests.py %s && salt-call state.highstate && bash'" % (temp_dir_path, formula_dir, image, u' '.join(states))
     # command = "docker run -i -v %s:/salinity -v %s:/formula -t julozi/wheezy-salt-base sh -c 'bash'" % (temp_dir_path, formula_dir)
     if be_verbose:
         print(colored('Command line : %s' % command, 'yellow'))
