@@ -3,6 +3,13 @@ salinity Changelog
 
 Here you can see the full list of changes between each salinity release.
 
+Version 0.3.3
+-------------
+- Added docker option to activate port mapping
+- Moving Docker hub repository to organization igbmc
+- Freeze Saltstack server/minion version to 2015.8.10 (for debian 7) and 2015.8.11 (for debian 8)
+- Removing boot2docker usage (thank you Docker for full feature tools on Mac !)
+
 Version 0.3.2
 -------------
 - Added --image option. Salinity now support testing on Debian 7 or Debian 8

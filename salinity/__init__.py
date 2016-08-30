@@ -48,9 +48,8 @@ def cli(verbose):
                               writable=False, readable=True, resolve_path=True),
               help='Path to the private key to use when accessing gitfs formulas')
 @click.option('--use_default_keys', is_flag=True, help='Use your default key pairs when accessing gitfs formulas')
-@click.option('--boot2docker', is_flag=True, help='Docker is running with boot2docker')
 @click.argument('states', nargs=-1)
-def test(image, formula_dir, pillar_file, gitfs_formula, pubkey, privkey, use_default_keys, boot2docker, states):
+def test(image, formula_dir, pillar_file, gitfs_formula, pubkey, privkey, use_default_keys, states):
     global be_verbose
     config = {}
 
@@ -83,15 +82,6 @@ def test(image, formula_dir, pillar_file, gitfs_formula, pubkey, privkey, use_de
     salinity_path = os.path.dirname(os.path.abspath(__file__))
 
     user_home_dir = os.path.expanduser('~')
-
-    if boot2docker or config.get('boot2docker', False):
-
-        # if using boot2docker only path located inside the user homedir can be mounted in a container
-        if not formula_dir.startswith(user_home_dir):
-            print(colored("Enable to configure the docker container properly", "red"))
-            if be_verbose:
-                print(colored('When using boot2docker to run your docker containers, you need to locate the directory containing your salt formula repositories somewhere inside your home directory (%s)' % user_home_dir, "orange"))
-            exit(1)
 
     # create temp dir to share files with the docker container
     salinity_user_dir = os.path.join(user_home_dir, '.salinity')
@@ -147,8 +137,8 @@ def test(image, formula_dir, pillar_file, gitfs_formula, pubkey, privkey, use_de
     if be_verbose:
         print(colored('Launching tests of %s on docker' % u','.join(states), 'green'))
 
-    command = "docker run -P -i -v %s:/salinity -v %s:/formula -t salinity/%s sh -c 'python /salinity/prepare_tests.py %s && salt-call state.highstate && bash'" % (temp_dir_path, formula_dir, image, u' '.join(states))
-    # command = "docker run -i -v %s:/salinity -v %s:/formula -t julozi/wheezy-salt-base sh -c 'bash'" % (temp_dir_path, formula_dir)
+    command = "docker run -P -i -v %s:/salinity -v %s:/formula -t igbmc/salinity:%s sh -c 'python /salinity/prepare_tests.py %s && salt-call state.highstate && bash'" % (temp_dir_path, formula_dir, image, u' '.join(states))
+
     if be_verbose:
         print(colored('Command line : %s' % command, 'yellow'))
     subprocess.call(command, shell=True)
