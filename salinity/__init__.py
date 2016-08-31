@@ -24,7 +24,7 @@ def cli(verbose):
 
 
 @cli.command(help="Test salt states on a local docker environment")  # NOQA
-@click.option('--image', default='debian:7',
+@click.option('--image', default='debian7',
               help='Name of the docker image used to run salt. By default salinity will use a debian 7 image.')
 @click.option('--formula_dir',
               type=click.Path(exists=True, file_okay=False, dir_okay=True,

@@ -99,8 +99,8 @@ The `test` command let you test one or more states of your formula on a virtual 
 Name of the docker image used to run salt.
 
 Available images are :
-* debian:7 (default)
-* debian:8
+* debian7 (default)
+* debian8
 
 **--formula_dir**
 
@@ -133,13 +133,12 @@ Currently RSA keys protected by a passphrase are not supported.
 
 **--use_default_keys**
 
+*Not functional : future release*
+
 Tell Salinity to use your default RSA keys (~/.ssh/id_rsa.pub and ~/.ssh/id_rsa).
 
 Currently RSA keys protected by a passphrase are not supported.
 
-**--boot2docker**
-
-Tell Salinity that your docker host is based on the boot2docker image (for Mac OS and Windows environment).
 
 ## Using Salinity configuration file
 
@@ -155,3 +154,13 @@ Here is a example of a `salinity.yml` file
         - https://github.com/saltstack-formulas/nginx-formula.git
     pubkey: ~/.ssh/salinity_rsa.pub
     privkey: ~/.ssh/salinity_rsa
+
+## Building Docker images
+
+*Note : Salinity uses Docker images hosted on docker hub.*
+
+To build and distribute a Docker image for Salinity, here are the common commands :
+
+    docker build -t igbmc/salinity:debian7 -f docker_builds/debian7 docker_builds
+    docker push igbmc/salinity:debian7
+
