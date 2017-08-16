@@ -5,4 +5,5 @@ env
 # Build tools
 salinity.egg-info
 *.pyc
-
+build/*
+dist/*
