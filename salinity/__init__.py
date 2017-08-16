@@ -24,8 +24,8 @@ def cli(verbose):
 
 
 @cli.command(help="Test salt states on a local docker environment")  # NOQA
-@click.option('--image', default='debian7',
-              help='Name of the docker image used to run salt. By default salinity will use a debian 7 image.')
+@click.option('--image',
+              help='Name of the docker image used to run salt. By default salinity will use latest available debian image.')
 @click.option('--formula_dir',
               type=click.Path(exists=True, file_okay=False, dir_okay=True,
                               writable=False, readable=True, resolve_path=True),
@@ -130,14 +130,30 @@ def test(image, formula_dir, pillar_file, gitfs_formula, pubkey, privkey, use_de
 
         salt_extra_config.close()
 
+    if not image:
+        image = config.get('image', 'debian-latest')
+    if be_verbose:
+        print(colored('Using image %s' % image, 'yellow'))
+
     # install container preparation script
-    shutil.copyfile(os.path.join(salinity_path, 'prepare_tests.py'), os.path.join(temp_dir_path, u'prepare_tests.py'))
+    shutil.copyfile(os.path.join(salinity_path, 'prepare_tests.py'),
+                    os.path.join(temp_dir_path, u'prepare_tests.py'))
 
     # launch docker container and run salt-call
     if be_verbose:
-        print(colored('Launching tests of %s on docker' % u','.join(states), 'green'))
+        print(colored('Launching tests of %s on docker'
+                      % u','.join(states), 'green'))
 
-    command = "docker run --rm -P -i -v %s:/salinity -v %s:/formula -t igbmc/salinity:%s sh -c 'python /salinity/prepare_tests.py %s && salt-call state.highstate && bash'" % (temp_dir_path, formula_dir, image, u' '.join(states))
+    salt_command = "python "\
+                   "/salinity/prepare_tests.py %s && "\
+                   "salt-call state.highstate" % u' '.join(states)
+    command = "docker run "\
+              "--rm -P -i "\
+              "-v %s:/salinity "\
+              "-v %s:/formula "\
+              "-t igbmc/salinity:%s "\
+              "sh -c '%s && bash'"\
+              % (temp_dir_path, formula_dir, image, salt_command)
 
     if be_verbose:
         print(colored('Command line : %s' % command, 'yellow'))

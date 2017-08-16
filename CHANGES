@@ -3,6 +3,11 @@ salinity Changelog
 
 Here you can see the full list of changes between each salinity release.
 
+Version 0.3.4
+-------------
+- Reorganize dockerfiles : each image has a directory
+- Add handling of image key in salinity.yml file, and default to debian-latest
+
 Version 0.3.3
 -------------
 - Added docker option to activate port mapping

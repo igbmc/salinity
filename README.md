@@ -67,7 +67,7 @@ Enter the following pillar data :
     Total states run:     6
     root@d7764b152842:/#
 
-Salinity will start a docker container runningvsalt master and salt minion to test the `mysql.server` state.
+Salinity will start a docker container running salt master and salt minion to test the `mysql.server` state.
 Once the state has been applied on the container, Salinity stay in the container waiting for instruction.
 
 You can either quit the container (Ctrl + D) or relaunch your state if you would like to check some modification in your formula :
@@ -99,8 +99,13 @@ The `test` command let you test one or more states of your formula on a virtual 
 Name of the docker image used to run salt.
 
 Available images are :
-* debian7 (default)
-* debian8
+* debian7-salt2015.8 alias debian7
+* debian8-salt2015.8 alias debian8
+* debian8-salt2016.11 alias debian8-latest
+* debian9-salt2016.11 alias debian9-latest
+* debian-latest which is latest version of both debian and salt (so debian9-salt2016.11 here)
+
+Default is debian-latest
 
 **--formula_dir**
 
@@ -148,6 +153,7 @@ Options passed to the command line have priority on the options read from the co
 
 Here is a example of a `salinity.yml` file
 
+    image: debian-latest
     pillar_file: pillar.test.sls
     gitfs_formula:
         - https://github.com/saltstack-formulas/mysql-formula.git
@@ -161,6 +167,6 @@ Here is a example of a `salinity.yml` file
 
 To build and distribute a Docker image for Salinity, here are the common commands :
 
-    docker build -t igbmc/salinity:debian7 -f docker_builds/debian7 docker_builds
+    docker build -t igbmc/salinity:debian7-salt2015.8 -t igbmc/salinity:debian7 docker_builds/debian7
     docker push igbmc/salinity:debian7
-
+    docker push igbmc/salinity:debian7-salt2015.8
