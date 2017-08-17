@@ -12,6 +12,7 @@ RUN apt-get update
 
 # Adding support for GitFS
 RUN apt-get install -y pkg-config make cmake libssh2-1-dev libhttp-parser-dev libssl-dev libz-dev python-pip python-dev libffi-dev
+RUN pip install pip --upgrade
 WORKDIR /tmp
 RUN wget https://github.com/libgit2/libgit2/archive/v0.21.3.tar.gz
 RUN tar xzf v0.21.3.tar.gz
