@@ -48,8 +48,9 @@ def cli(verbose):
                               writable=False, readable=True, resolve_path=True),
               help='Path to the private key to use when accessing gitfs formulas')
 @click.option('--use_default_keys', is_flag=True, help='Use your default key pairs when accessing gitfs formulas')
+@click.option('--with_retcode', is_flag=True, default=False, help='Return exit code of saltstack command and does not run bash in Docker container')
 @click.argument('states', nargs=-1)
-def test(image, formula_dir, pillar_file, gitfs_formula, pubkey, privkey, use_default_keys, states):
+def test(image, formula_dir, pillar_file, gitfs_formula, pubkey, privkey, use_default_keys, with_retcode, states):
     global be_verbose
     config = {}
 
@@ -147,21 +148,37 @@ def test(image, formula_dir, pillar_file, gitfs_formula, pubkey, privkey, use_de
     salt_command = "python "\
                    "/salinity/prepare_tests.py %s && "\
                    "salt-call state.highstate" % u' '.join(states)
+    if with_retcode:
+        salt_command = salt_command +\
+                       " --retcode-passthrough"
+
     command = "docker run "\
               "--rm -P -i "\
               "-v %s:/salinity "\
               "-v %s:/formula "\
               "-t igbmc/salinity:%s "\
-              "sh -c '%s && bash'"\
-              % (temp_dir_path, formula_dir, image, salt_command)
+              % (temp_dir_path, formula_dir, image)
+    if with_retcode:
+        command = command +\
+                  "sh -c '%s'"\
+                  % (salt_command)
+    else:
+        command = command +\
+                  "sh -c '%s && bash'"\
+                  % (salt_command)
 
     if be_verbose:
         print(colored('Command line : %s' % command, 'yellow'))
-    subprocess.call(command, shell=True)
+    returncode = subprocess.call(command, shell=True)
 
     shutil.rmtree(temp_dir_path)
     if be_verbose:
         print(colored('Salinity temp dir deleted successfully', 'green'))
+
+    if with_retcode:
+        print(colored('Return code : %s' % returncode, attrs=['reverse']))
+        import sys
+        sys.exit(returncode)
 
 
 def main():
