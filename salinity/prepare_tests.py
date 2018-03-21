@@ -40,10 +40,15 @@ def main():
         shutil.copyfile('/salinity/extra_config', u'/etc/salt/extra_config')
 
     print "Starting salt-master"
-    subprocess.call(" service salt-master start", shell=True)
+    subprocess.call("service salt-master start && sleep 10", shell=True)
 
     print "Starting salt-minion"
-    subprocess.call("service salt-minion start", shell=True)
+    subprocess.call("service salt-minion start && sleep 10", shell=True)
+
+    subprocess.call("service salt-master status", shell=True)
+    subprocess.call("service salt-minion status", shell=True)
+
+    print "Calling for salt highstate"
 
 
 if __name__ == '__main__':
